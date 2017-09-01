@@ -59,6 +59,8 @@ switch (Platform.OS) {
     break;
 }
 
+const TEST_ID_TAB_VIEW = 'TEST_ID_TAB_VIEW';
+
 export default class TabViewAnimated<T: Route<*>> extends PureComponent<
   DefaultProps<T>,
   Props<T>,
@@ -280,6 +282,7 @@ export default class TabViewAnimated<T: Route<*>> extends PureComponent<
         onLayout={this._handleLayout}
         loaded={this.state.loaded}
         style={[styles.container, this.props.style]}
+        testID={TEST_ID_TAB_VIEW}
       >
         {renderHeader && renderHeader(props)}
         {renderPager({
