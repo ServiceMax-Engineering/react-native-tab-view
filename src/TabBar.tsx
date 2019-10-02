@@ -278,7 +278,7 @@ export default class TabBar<T extends Route> extends React.Component<
       },
     });
   };
-
+// @ts-ignore
   private getTranslateX = memoize(
     (scrollAmount: Animated.Node<number>, maxScrollDistance: number) =>
       Animated.multiply(
@@ -322,10 +322,25 @@ export default class TabBar<T extends Route> extends React.Component<
     const isWidthDynamic = this.getFlattenedTabWidth(tabStyle) === 'auto';
     const tabBarWidth = this.getTabBarWidth(this.props, this.state);
     const tabBarWidthPercent = `${routes.length * 40}%`;
-    const translateX = this.getTranslateX(
-      this.scrollAmount,
-      this.getMaxScrollDistance(tabBarWidth, layout.width)
-    );
+    // const translateX = this.getTranslateX(
+    //   this.scrollAmount,
+    //   this.getMaxScrollDistance(tabBarWidth, layout.width)
+    // );
+    const isAndroid = Platform.OS === 'android';
+    const isRTL = I18nManager.isRTL;
+    let translateX;
+    if (isAndroid && isRTL) {
+      translateX = Animated.multiply(
+        Animated.sub(
+          this.scrollAmount,
+          Math.max(tabBarWidth - layout.width, 0)
+        ),
+        -1
+      );
+    } else {
+      const dir = isRTL ? 1 : -1;
+      translateX = Animated.multiply(this.scrollAmount, dir);
+    }
 
     return (
       <Animated.View
@@ -479,6 +494,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   tabContent: {
+    minWidth:'100%',
     flexDirection: 'row',
     flexWrap: 'nowrap',
   },

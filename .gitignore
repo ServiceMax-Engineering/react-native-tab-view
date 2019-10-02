@@ -9,6 +9,9 @@
 .vscode/
 jsconfig.json
 
+# package
+react-native-tab-view-*.tgz
+
 # Xcode
 #
 build/
