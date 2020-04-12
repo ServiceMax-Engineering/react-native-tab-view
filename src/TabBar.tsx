@@ -290,7 +290,10 @@ export default class TabBar<T extends Route> extends React.Component<
     (scrollAmount: Animated.Node<number>, maxScrollDistance: number) =>
       Animated.multiply(
         Platform.OS === 'android' && I18nManager.isRTL
-          ? Animated.sub(maxScrollDistance, scrollAmount)
+          // SVMX-CHANGE-START: 1
+          // ? Animated.sub(maxScrollDistance, scrollAmount)
+          ? Animated.sub(scrollAmount, Math.max(maxScrollDistance, 0))
+          // SVMX-CHANGE-END: 1
           : scrollAmount,
         I18nManager.isRTL ? 1 : -1
       )
@@ -487,6 +490,9 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   tabContent: {
+    // SVMX-CHANGE-START: 2
+    minWidth:'100%',
+    // SVMX-CHANGE-END: 2
     flexDirection: 'row',
     flexWrap: 'nowrap',
   },
