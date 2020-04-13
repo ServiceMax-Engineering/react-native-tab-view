@@ -290,10 +290,7 @@ export default class TabBar<T extends Route> extends React.Component<
     (scrollAmount: Animated.Node<number>, maxScrollDistance: number) =>
       Animated.multiply(
         Platform.OS === 'android' && I18nManager.isRTL
-          // SVMX-CHANGE-START: 1
-          // ? Animated.sub(maxScrollDistance, scrollAmount)
-          ? Animated.sub(scrollAmount, Math.max(maxScrollDistance, 0))
-          // SVMX-CHANGE-END: 1
+          ? Animated.sub(maxScrollDistance, scrollAmount)
           : scrollAmount,
         I18nManager.isRTL ? 1 : -1
       )
@@ -332,11 +329,27 @@ export default class TabBar<T extends Route> extends React.Component<
     const isWidthDynamic = this.getFlattenedTabWidth(tabStyle) === 'auto';
     const tabBarWidth = this.getTabBarWidth(this.props, this.state);
     const tabBarWidthPercent = `${routes.length * 40}%`;
-    const translateX = this.getTranslateX(
-      this.scrollAmount,
-      this.getMaxScrollDistance(tabBarWidth, layout.width)
-    );
-
+    // SVMX-CHANGE-START: 1
+    // const translateX = this.getTranslateX(
+    //   this.scrollAmount,
+    //   this.getMaxScrollDistance(tabBarWidth, layout.width)
+    // );
+    let translateX;
+    if (I18nManager.isRTL) {
+      translateX = Platform.OS === 'android' ? Animated.multiply(
+        Animated.sub(
+          this.scrollAmount,
+          Math.max(tabBarWidth - layout.width, 0)
+        ),
+        -1
+      ) : Animated.multiply(this.scrollAmount, -1);
+    } else {
+      translateX = this.getTranslateX(
+        this.scrollAmount,
+        this.getMaxScrollDistance(tabBarWidth, layout.width)
+      );
+    }
+    // SVMX-CHANGE-END: 1
     return (
       <Animated.View
         onLayout={this.handleLayout}
