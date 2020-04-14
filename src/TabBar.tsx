@@ -335,14 +335,14 @@ export default class TabBar<T extends Route> extends React.Component<
     //   this.getMaxScrollDistance(tabBarWidth, layout.width)
     // );
     let translateX;
-    if (I18nManager.isRTL) {
-      translateX = Platform.OS === 'android' ? Animated.multiply(
+    if (I18nManager.isRTL && (Platform.OS === 'android' || layout.width > tabBarWidth)) {
+      translateX = Animated.multiply(
         Animated.sub(
           this.scrollAmount,
           Math.max(tabBarWidth - layout.width, 0)
         ),
         -1
-      ) : Animated.multiply(this.scrollAmount, -1);
+      );
     } else {
       translateX = this.getTranslateX(
         this.scrollAmount,
